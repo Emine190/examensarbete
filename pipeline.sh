@@ -3,15 +3,15 @@
 # this sample was 
 #Fix the sample.txt file to include the new control women so the program can run and do bioinformatic things. 
 
-samples_to_include=/media/god/data1/Emil/Control/sample
+samples_to_include=/media/god/My Book Duo1/Emil/Control/sample
 
 cat $samples_to_include | while read sample
 do
 
 echo $sample
 control=/media/god/LaCie/GTEx_-50_females_whole_genome_seq/batch2
-Input1=/media/god/data1/Emil/Control/untrimmed/$sample'_'1.fastq.gz
-Input2=/media/god/data1/Emil/Control/untrimmed/$sample'_'2.fastq.gz
+Input1=/media/god/My Book Duo1/Emil/Control/untrimmed/$sample'_'1.fastq.gz
+Input2=/media/god/My Book Duo1/Emil/Control/untrimmed/$sample'_'2.fastq.gz
 
 #Have samtools view function where the genome is and becomes a sorted bamfile.
 samtools view -b -@32 $control/$sample.cram | samtools sort -o $sample.bam -@32 -n - 
@@ -23,8 +23,8 @@ rm $sample.bam
 #removes the bam file intermediates so they dont take up unneccesary space on the disks.
 # Here pointers for the reference genome and the pointers for the BWA and fastq.
 ref_bwa_mem=/media/god/data1/genome_indexes/bwa/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna
-trimmedin1=/media/god/data1/Emil/Control/trimmed/trimmed.$sample'_'1.fastq.gz
-trimmedin2=/media/god/data1/Emil/Control/trimmed/trimmed.$sample'_'2.fastq.gz
+trimmedin1=/media/god/My Book Duo1/Emil/Control/trimmed/trimmed.$sample'_'1.fastq.gz
+trimmedin2=/media/god/My Book Duo1/Emil/Control/trimmed/trimmed.$sample'_'2.fastq.gz
 ID=$(echo $sample | cut -d'-' -f1,2)
 SM=$(echo $sample | cut -d'-' -f1,2)
 Aligned=/media/god/data1/Emil/Control/aligned/$sample.aligned.bam
@@ -58,25 +58,25 @@ bwa mem -t32 -M -R "@RG\tID:$ID\tSM:$SM\tPL:ILLUMINA:150" $ref_bwa_mem $trimmedi
 rm $trimmedin1
 rm $trimmedin2
 
-bai=/media/god/data1/Emil/Control/aligned/$sample.aligned.bam.bai
+bai=/media/god'/My Book Duo1'/Emil/Control/aligned/$sample.aligned.bam.bai
 #Rerun all the control samples from here in the control group. Something didnt go correctly from here. The pointer to bai was wrong.
 samtools index -b -@32 $Aligned $bai
 
-AlignedX=/media/god/data1/Emil/Control/alignedXchr/$sample.AlignedXChr.bam
+AlignedX=/media/god'/My Book Duo1'/Emil/Control/alignedXchr/$sample.AlignedXChr.bam
 
 #This is the point where the aligned genome can be split to just X chromosome
 samtools view -b -@32 $Aligned chrX > $AlignedX
 
 #Reverse all the UPIC-tags to the sample tag so the script can flow.
-NodupX=/media/god/data1/Emil/Control/NodupXchr/$sample.NodupXchr.bam 
+NodupX=/media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam 
 # Finish this pointer with the folder. 
 #Samabamba version is 0.7.1-linux-static 
 # -r to remove the duplicates located on the file. -r is the function that removes the dups instead of just marking them. 
 $sambamba markdup -r -t32 $AlignedX $NodupX
-Haplotype=/media/god/data1/Emil/Control/haplotypecaller/$sample.Haplotype.g.vcf.gz
-rm $Aligned
+Haplotype=/media/god'/My Book Duo1'/Emil/Control/haplotypecaller/$sample.Haplotype.g.vcf.gz
+#rm $Aligned
 #Got a separate version from the UPIC from björn just have to do the indexing.
-baiNoX=/media/god/data1/Emil/Control/NodupXchr/$sample.NodupXchr.bam.bai
+baiNoX=/media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam.bai
 samtools index -b -@32 $NodupX $baiNoX
 #This bai files needs to be here or it will not run correctly in the haplotypecaller. 
 
@@ -150,9 +150,9 @@ done
 
 #### VariantRecalibrator ####
 # SNP modeling pass
-out_vcf_GenotypeGVCFs=/media/god/data1/Emil/Control/fin/All_chrX.vcf.gz
+out_vcf_GenotypeGVCFs=/media/god'/My Book Duo1'/Emil/Control/fin/All_chrX.vcf.gz
 variants_folder=/media/god/data1/genome_indexes/variants
-vcf_temp=/media/god/data1/Emil/Control/tmp
+vcf_temp=/media/god'/My Book Duo1'/Emil/Control/tmp
 
 output_vcf_SNP_recalfile_VariantRecalibrator=$vcf_temp/VarRecal.snps.recalfile.vcf
 output_tranches_SNP_VariantRecalibrator=$vcf_temp/VarRecal.snps.VariantRecalibrator.tranches
