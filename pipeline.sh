@@ -3,9 +3,11 @@
 # this sample was 
 #Fix the sample.txt file to include the new control women so the program can run and do bioinformatic things. 
 
-samples_to_include=/media/god/My Book Duo1/Emil/Control/sample
+#samples_to_include=/media/god/My Book Duo1/Emil/Control/sample
+#this function does not work as intended due to the spaces in the name of the harddrive.
+#It works when you change the pointer to the direct path will lead to the cat function working as intended.
 
-cat $samples_to_include | while read sample
+cat /media/god/My Book Duo1/Emil/Control/sample | while read sample
 do
 
 echo $sample
@@ -16,7 +18,7 @@ Input2=/media/god/My Book Duo1/Emil/Control/untrimmed/$sample'_'2.fastq.gz
 #Have samtools view function where the genome is and becomes a sorted bamfile.
 samtools view -b -@32 $control/$sample.cram | samtools sort -o $sample.bam -@32 -n - 
 
-samtools fastq -@32 -1 $Input1 -2 $Input2  $sample.bam
+samtools fastq -@32 -1 /media/god/My Book Duo1/Emil/Control/untrimmed/$sample'_'1.fastq.gz -2 /media/god/My Book Duo1/Emil/Control/untrimmed/$sample'_'2.fastq.gz  $sample.bam
 
 rm $sample.bam
 
@@ -40,7 +42,10 @@ gatk=/media/god/data1/software/gatk-4.2.6.1/gatk
 igv=/media/god/data1/software/IGV_Linux_2.8.0
 
 # quality trimming
-$fastp -i $Input1 -I $Input2 -o $trimmedin1 -O $trimmedin2
+$fastp -i /media/god/My Book Duo1/Emil/Control/untrimmed/$sample'_'1.fastq.gz \
+-I /media/god/My Book Duo1/Emil/Control/untrimmed/$sample'_'2.fastq.gz \
+-o /media/god/My Book Duo1/Emil/Control/trimmed/trimmed.$sample'_'1.fastq.gz \
+-O /media/god/My Book Duo1/Emil/Control/trimmed/trimmed.$sample'_'2.fastq.gz
 
 # trimming of the data to remove primers from the sequences.
 rm $Input1
@@ -51,7 +56,9 @@ rm $Input2
 #Program: bwa (alignment via Burrows-Wheeler transformation)
 #Version: 0.7.17-r1188
 
-bwa mem -t32 -M -R "@RG\tID:$ID\tSM:$SM\tPL:ILLUMINA:150" $ref_bwa_mem $trimmedin1 $trimmedin2 | samtools sort -o $Aligned -@32 -
+bwa mem -t32 -M -R "@RG\tID:$ID\tSM:$SM\tPL:ILLUMINA:150" $ref_bwa_mem\
+/media/god/My Book Duo1/Emil/Control/trimmed/trimmed.$sample'_'1.fastq.gz \
+/media/god/My Book Duo1/Emil/Control/trimmed/trimmed.$sample'_'1.fastq.gz \ | samtools sort -o /media/god/data1/Emil/Control/aligned/$sample.aligned.bam -@32 -
 
 #Run an index to run the view functions to create just the X chromosome file.
 #Creates the pointer for the index file for the index function so the bai files get to the bam files.
@@ -77,12 +84,15 @@ Haplotype=/media/god'/My Book Duo1'/Emil/Control/haplotypecaller/$sample.Haploty
 #rm $Aligned
 #Got a separate version from the UPIC from björn just have to do the indexing.
 baiNoX=/media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam.bai
-samtools index -b -@32 $NodupX $baiNoX
+samtools index -b -@32 /media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam \
+/media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam.bai
 #This bai files needs to be here or it will not run correctly in the haplotypecaller. 
 
 #Here the GATK pipelinestarts and haplotypecaller is the only step needs to be in the loop. 
 #Due to the rest being combined to one file in the step after this in hte genomicsDBimport step.
-$gatk HaplotypeCaller -R $ref_bwa_mem -I $NodupX -O $Haplotype -ERC GVCF -G StandardAnnotation -G AS_StandardAnnotation -G StandardHCAnnotation
+$gatk HaplotypeCaller -R $ref_bwa_mem -I /media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam \
+-O /media/god'/My Book Duo1'/Emil/Control/haplotypecaller/$sample.Haplotype.g.vcf.gz \
+-ERC GVCF -G StandardAnnotation -G AS_StandardAnnotation -G StandardHCAnnotation
 
 #Loop ends here due to the files being combined for the genmics db and will stay like that until at least the applyVQSR function.
 #THe loop can be reintroduced later to 
