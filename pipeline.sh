@@ -67,19 +67,20 @@ rm $trimmedin2
 
 bai=/media/god'/My Book Duo1'/Emil/Control/aligned/$sample.aligned.bam.bai
 #Rerun all the control samples from here in the control group. Something didnt go correctly from here. The pointer to bai was wrong.
-samtools index -b -@32 $Aligned $bai
+samtools index -b -@32 /media/god/data1/Emil/Control/aligned/$sample.aligned.bam \
+/media/god'/My Book Duo1'/Emil/Control/aligned/$sample.aligned.bam.bai
 
 AlignedX=/media/god'/My Book Duo1'/Emil/Control/alignedXchr/$sample.AlignedXChr.bam
 
 #This is the point where the aligned genome can be split to just X chromosome
-samtools view -b -@32 $Aligned chrX > $AlignedX
+samtools view -b -@32 /media/god/data1/Emil/Control/aligned/$sample.aligned.bam chrX > /media/god'/My Book Duo1'/Emil/Control/alignedXchr/$sample.AlignedXChr.bam
 
 #Reverse all the UPIC-tags to the sample tag so the script can flow.
 NodupX=/media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam 
 # Finish this pointer with the folder. 
 #Samabamba version is 0.7.1-linux-static 
 # -r to remove the duplicates located on the file. -r is the function that removes the dups instead of just marking them. 
-$sambamba markdup -r -t32 $AlignedX $NodupX
+$sambamba markdup -r -t32 /media/god'/My Book Duo1'/Emil/Control/alignedXchr/$sample.AlignedXChr.bam /media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam
 Haplotype=/media/god'/My Book Duo1'/Emil/Control/haplotypecaller/$sample.Haplotype.g.vcf.gz
 #rm $Aligned
 #Got a separate version from the UPIC from björn just have to do the indexing.
