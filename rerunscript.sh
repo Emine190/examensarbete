@@ -60,3 +60,5 @@ bai=/media/god'/My Book Duo1'/Emil/Control/aligned/$sample.aligned.bam.bai
 #Rerun all the control samples from here in the control group. Something didnt go correctly from here. The pointer to bai was wrong.
 samtools index -b -@32 /media/god/data1/Emil/Control/aligned/$sample.aligned.bam \
 /media/god'/My Book Duo1'/Emil/Control/aligned/$sample.aligned.bam.bai
+
+done
