@@ -8,3 +8,6 @@ In the syntax of samtools and all the function used in bash the creation of a po
 Due to the system being a bit of a sussy thing that wont work as intended due to the space being in the same interaction as a dash or slash leading to bad juju and not working. 
 Example is my/dir/My Book/sample will make the function look in /My/sample and then leading to a failure. 
 This can be of greater difficulty when all the code is infested by these pointers that wont work for the function but will work for the Echo.
+https://github.com/stephaniehicks/Awesome-Bioinformatics-Benchmarks/blob/master/README.md#sv-callers
+
+Read this and check if it is useful for my stuff. 
