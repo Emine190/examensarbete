@@ -1,3 +1,6 @@
+install.packages("chromoMap")
+
+library(chromomap)
 library(cowplot)
 library(ggplot2)
 library(rstatix)
@@ -5,6 +8,8 @@ library(EnvStats)
 library(ggbeeswarm)
 library(ggpubr)
 library(tidyverse)
+library(karyoploteR)
+
 
 
 ### T Test
@@ -24,3 +29,22 @@ stat_test_anova_tukey <- df_raw %>%
 stat_test_KS <- df_raw %>% 
   kruskal_test(formula = reformulate(colnames(df_raw)[2], (colnames(df_raw)[1])))
 stat.test.dunn <- df_raw %>% dunn_test(reformulate(colnames(df_raw)[2], (colnames(df_raw)[1])))
+
+
+base_plot <- ggplot(data = datasets, mapping = aes(x = expression))
+
+base_plot + geom_boxplot()
+
+base_plot + geom_point()
+
+base_plot + geom_histogram()
+
+kp <- plotKaryotype(chromosomes=(c("autosomal"))
+                   
+
+kp <- plotKaryotype(chromosomes=c("chrX")
+
+ kp <- plotKaryotype(chromosomes = c("chr1", "chr2"), plot.type = 2)
+ kpDataBackground(kp, data.panel = 1)
+ kpDataBackground(kp, data.panel = 2)
+
