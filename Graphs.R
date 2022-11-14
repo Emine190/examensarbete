@@ -14,6 +14,7 @@ library(ggpubr)
 library(tidyverse)
 library(karyoploteR)
 
+df_tiddit <- read.table("./desktop/data/GTEX-1A32A..bed", header = FALSE)
 
 
 ### T Test
