@@ -1,4 +1,8 @@
-install.packages("chromoMap")
+install.packages("BiocManager")
+
+BiocManager::install("karyoploteR")
+BiocManager::install("rtracklayer")
+
 
 library(chromomap)
 library(cowplot)
