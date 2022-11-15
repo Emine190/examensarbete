@@ -14,9 +14,30 @@ library(ggpubr)
 library(tidyverse)
 library(karyoploteR)
 
-tbl <-
-    list.files(pattern = "*.csv") %>% 
-    map_df(~read_csv(.))
+temp = list.files(pattern="*.bed")
+myfiles = lapply(temp, read.delim)
+
+kp <- plotKaryotype(plot.type=6, main="plot.type=1")
+kpDataBackground(kp, data.panel = 1)
+kpText(kp, chr="chr1", x=60e6, y=0.5, labels="data.panel=1", data.panel = 1)
+kpDataBackground(kp, data.panel = 2)
+kpText(kp, chr="chr1", x=60e6, y=0.5, labels="data.panel=2", data.panel = 2)
+
+
+regions <- createRandomRegions(nregions=400, length.mean = 3e6, mask=NA, non.overlapping = FALSE)
+kpPlotRegions(kp, data=regions,chromosomes="chrX")
+
+
+
+kp4 <- plotKaryotype("hg19", plot.type=1, chromosomes=c("chr17", "chrX"))
+
+regs <- createRandomRegions(nregions = 1000, length.mean = 10000000, length.sd = 1000000,
+                            non.overlapping = FALSE, genome = "hg19", mask=NA)
+kpPlotRegions(kp4, regs, r0 = 0, r1 = 0.8, col="#AAAAAA")
+
+kpPlotCoverage(kp4, regs, ymax = 20, r0=0.8,  r1=1, col="#CCCCFF")
+kpAxis(kp, ymin = 0, ymax= 20, numticks = 2, r0 = 0.8, r1=1)
+
 
 ### T Test
 stat_test_t.test <- df_raw %>% 
