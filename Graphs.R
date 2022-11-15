@@ -14,8 +14,9 @@ library(ggpubr)
 library(tidyverse)
 library(karyoploteR)
 
-df_tiddit <- read.table("./desktop/data/GTEX-1A32A..bed", header = FALSE)
-
+tbl <-
+    list.files(pattern = "*.csv") %>% 
+    map_df(~read_csv(.))
 
 ### T Test
 stat_test_t.test <- df_raw %>% 
