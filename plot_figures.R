@@ -3,7 +3,7 @@ install.packages("BiocManager")
 install.packages("tidyverse")
 #BiocManager::install("rtracklayer")
 
-Set the working directory to the correct directory.
+#Set the working directory to the correct directory.
 setwd("/media/god/jellyfish/Emil/R/")
 
 #Check the version of biocManager and set it to the latest. and set all the packages that are needed to the library.
@@ -91,4 +91,25 @@ kp <- plotKaryotype(plot.type=3, main="plot.type=3", genome = "hg38", chromosome
   kpPoints(karyoplot = kp , data=gr_Unique_snp, chr =  seqnames(gr_Unique_snp), x = start(gr_Unique_snp), col = "red", y=0.15)
   kpAxis()
   kpPlotMarkers(karyoplot = kp, data=gr_Unique_snp, chr = seqnames(gr_Unique_snp), y=0.3, labels=)
+
+
+
+#change the working directory
+setwd("/media/god/jellyfish/Emil/R/SV/cov/")
+
+cov_list = list.files(pattern="*.bed")
+cov_files = lapply(temp, read.delim)
+
+#Fix the samples to Granges objects. ask Björn about this if i am supposed to do the same as above or change it.
+UPIC_COV <- as.data.frame(cov_files$sample == "GTEX-UPIC-0004-SM-5SOEF")
+PLJ_COV <- as.data.frame(cov_files$sample == "GTEX-13PLJ-0003-SM-6WSSCN")
+ZZPU_COV <- as.data.frame(cov_files$sample == "GTEX-ZZPU-0003-SM-6WBUC")
+
+# Fix the combined file for the 11 controls.
+
+
+
+#plot the coverage of the non-mosaic and compare to the control 
+
+
 
