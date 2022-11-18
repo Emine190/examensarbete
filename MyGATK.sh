@@ -1,23 +1,23 @@
 
-cat /media/god/My Book Duo1/Emil/Control/sample | while read sample
+cat /media/MY/files/Control/sample | while read sample
 do
 
 echo $sample
-ref_bwa_mem=/media/god/data1/genome_indexes/bwa/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna
-gatk=/media/god/data1/software/gatk-4.2.6.1/gatk
+ref_bwa_mem=/media/files/genome_indexes/bwa/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna
+gatk=/media/software/gatk-4.2.6.1/gatk
 
-Haplotype=/media/god'/My Book Duo1'/Emil/Control/haplotypecaller/$sample.Haplotype.g.vcf.gz
+Haplotype=/media/MY/files/haplotypecaller/$sample.Haplotype.g.vcf.gz
 #rm $Aligned
-#Got a separate version from the UPIC from björn just have to do the indexing.
+#before this step check the head and tail of the files so they are OK other wise redo.
 baiNoX=/media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam.bai
-samtools index -b -@32 /media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam \
-/media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam.bai
+samtools index -b -@32 /media/MY/files/NodupXchr/$sample.NodupXchr.bam \
+/media/MY/files/NodupXchr/$sample.NodupXchr.bam.bai
 #This bai files needs to be here or it will not run correctly in the haplotypecaller. 
 
 #Here the GATK pipelinestarts and haplotypecaller is the only step needs to be in the loop. 
 #Due to the rest being combined to one file in the step after this in hte genomicsDBimport step.
-$gatk HaplotypeCaller -R $ref_bwa_mem -I /media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam \
--O /media/god'/My Book Duo1'/Emil/Control/haplotypecaller/$sample.Haplotype.g.vcf.gz \
+$gatk HaplotypeCaller -R $ref_bwa_mem -I /media/MY/files/NodupXchr/$sample.NodupXchr.bam \
+-O /media/MY/files/Control/haplotypecaller/$sample.Haplotype.g.vcf.gz \
 -ERC GVCF -G StandardAnnotation -G AS_StandardAnnotation -G StandardHCAnnotation
 
 #Loop ends here due to the files being combined for the genmics db and will stay like that until at least the applyVQSR function.
@@ -30,9 +30,9 @@ done
 # Generate input_for_GenomicDBImport.txt, a tab-separated file that contains sample name and sample paths so the perl and perl2 script can work properly.
 # input_for_GenomicDBImport.txt should look like this: This file is created in this format.
 
-#GTEX-13PLJ /media/god/data1/Emil/haplotypecaller/GTEX-13PLJ-0003-SM-6WSCN.Haplotype.g.vcf.gz
-#GTEX-UPIC /media/god/data1/Emil/haplotypecaller/GTEX-UPIC-0004-SM-5SOEF.Haplotype.g.vcf.gz
-#GTEX-ZZPU /media/god/data1/Emil/haplotypecaller/GTEX-ZZPU-0003-SM-6WBUC.Haplotype.g.vcf.gz
+#Woman1 /media/MY/files/haplotypecaller/Woman1.g.vcf.gz
+#Woman2 /media/MY/files/haplotypecaller/Woman2.g.vcf.gz
+#Woman3 /media/MY/files/haplotypecaller/Woman3.g.vcf.gz
 
 
  
@@ -51,7 +51,7 @@ done
 ################################################# IMPORTANT ##########################################################################
 
 # This is moved to perl.sh so the code will be found there with comments. For this part until Variantcaller Runs in two different scripts perlsh and perl2.sh . Also very important to fix the required txt files. 
-#cut -f2 /media/god/data1/genome_indexes/bwa/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict | cut -d':' -f2 | cut -d'_' -f1 | sort | uniq | grep -v 'Un' | grep -v 'EBV' | grep -v '1.6' > contigs.txt 
+#cut -f2 /media/files/genome_indexes/bwa/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict | cut -d':' -f2 | cut -d'_' -f1 | sort | uniq | grep -v 'Un' | grep -v 'EBV' | grep -v '1.6' > contigs.txt 
 #run this in the terminal and make sure to not have a folder och file named chrX or any chr[int] names.
 #contigs.txt should look like this:
 #chr1
@@ -65,9 +65,9 @@ done
 ################################################# IMPORTANT ##########################################################################
 #### VariantRecalibrator ####
 # SNP modeling pass
-out_vcf_GenotypeGVCFs=/media/god'/My Book Duo1'/Emil/Control/fin/All_chrX.vcf.gz
-variants_folder=/media/god/data1/genome_indexes/variants
-vcf_temp=/media/god'/My Book Duo1'/Emil/Control/tmp
+out_vcf_GenotypeGVCFs=/media/MY/files/Control/fin/All_chrX.vcf.gz
+variants_folder=/media/files/genome_indexes/variants
+vcf_temp=/media/MY/files/Control/tmp
 
 output_vcf_SNP_recalfile_VariantRecalibrator=$vcf_temp/VarRecal.snps.recalfile.vcf
 output_tranches_SNP_VariantRecalibrator=$vcf_temp/VarRecal.snps.VariantRecalibrator.tranches
