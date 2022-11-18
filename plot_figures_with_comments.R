@@ -25,16 +25,16 @@ library(rtracklayer)
 #myfiles = lapply(temp, read.delim)
 
 #imports the data of the three non-mosaic women
-UPIC <- fread("het_UPIC.bed")
-PLJ <- fread("het_13PLJ.bed")
-ZZPU <- fread("het_ZZPU.bed")
+Woman1 <- fread("het_Woman1.bed")
+Woman2 <- fread("het_Woman2.bed")
+Woman3 <- fread("het_ZWoman3.bed")
 
 #check which SNPs are in shared
-kek1 <- intersect(UPIC$V2, PLJ$V2)
-kek2 <- intersect(kek1, ZZPU$V2)
+kek1 <- intersect(Woman1$V2, Woman2$V2)
+kek2 <- intersect(kek1, Woman3$V2)
 
 #Make a file with all of them together
-bur <- rbind(UPIC, PLJ, ZZPU)
+bur <- rbind(Woman1, Woman2, Woman3)
 
 #Filter out so only the SNPs that are in all samples are in the files. 
 bur_filterOG <- as.data.frame(bur[bur$V2 %in% kek2,])
@@ -54,9 +54,9 @@ gr_bur_filterOG <- toGRanges(shortz)
 
 #plots the data and separetes the samples to 3 different lines, acts as a form of control 
 kp <- plotKaryotype(plot.type=3, main="plot.type=3", genome = "hg38", chromosomes = "chrX")
-kpPoints(karyoplot = kp , data=gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-UPIC-0004-SM-5SOEF",], chr =  seqnames(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-UPIC-0004-SM-5SOEF",]), x = start(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-UPIC-0004-SM-5SOEF",]), col = "blue", y=0.05)
-kpPoints(karyoplot = kp , data=gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-13PLJ-0003-SM-6WSSCN",], chr =  seqnames(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-13PLJ-0003-SM-6WSSCN",]), x = start(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-13PLJ-0003-SM-6WSSCN",]), col = "red", y=0.15)
-kpPoints(karyoplot = kp , data=gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-ZZPU-0003-SM-6WBUC",], chr =  seqnames(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-ZZPU-0003-SM-6WBUC",]), x = start(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-ZZPU-0003-SM-6WBUC",]), col = "grey", y=0.25)
+kpPoints(karyoplot = kp , data=gr_bur_filterOG[gr_bur_filterOG$sample == "Woman1",], chr =  seqnames(gr_bur_filterOG[gr_bur_filterOG$sample == "Woman1",]), x = start(gr_bur_filterOG[gr_bur_filterOG$sample == "Woman1",]), col = "blue", y=0.05)
+kpPoints(karyoplot = kp , data=gr_bur_filterOG[gr_bur_filterOG$sample == "Woman2",], chr =  seqnames(gr_bur_filterOG[gr_bur_filterOG$sample == "Woman2",]), x = start(gr_bur_filterOG[gr_bur_filterOG$sample == "Woman2",]), col = "red", y=0.15)
+kpPoints(karyoplot = kp , data=gr_bur_filterOG[gr_bur_filterOG$sample == "Woman3",], chr =  seqnames(gr_bur_filterOG[gr_bur_filterOG$sample == "Woman3",]), x = start(gr_bur_filterOG[gr_bur_filterOG$sample == "Woman3",]), col = "grey", y=0.25)
 kpAxis()
 
 
@@ -101,9 +101,9 @@ cov_list = list.files(pattern="*.bed")
 cov_files = lapply(temp, read.delim)
 
 #Fix the samples to Granges objects. ask Björn about this if i am supposed to do the same as above or change it.
-UPIC_COV <- as.data.frame(cov_files$sample == "GTEX-UPIC-0004-SM-5SOEF")
-PLJ_COV <- as.data.frame(cov_files$sample == "GTEX-13PLJ-0003-SM-6WSSCN")
-ZZPU_COV <- as.data.frame(cov_files$sample == "GTEX-ZZPU-0003-SM-6WBUC")
+UPIC_COV <- as.data.frame(cov_files$sample == "Woman1")
+PLJ_COV <- as.data.frame(cov_files$sample == "Woman2")
+ZZPU_COV <- as.data.frame(cov_files$sample == "Woman3")
 
 # Fix the combined file for the 11 controls.
 
