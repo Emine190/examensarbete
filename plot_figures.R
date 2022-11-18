@@ -66,6 +66,17 @@ thingforgr <- dplyr::select(Unique_snp, chr, start, end, sample)
 
 gr_Unique_snp <- toGRanges(thingforgr)
 
+# Redoing and splitting the depth so all zeros are removed.
+bur_split <- Unique_snp %>% separate(depth, c('sampleX', 'refX'))
+BurUNiqueNoZero <- filter(bur_split, sampleX > 0, refX > 0)
+
+NoZerogr <- dplyr::select(BurUNiqueNoZero, chr, start, end, sample)
+
+gr_NoZero_snp <- toGRanges(NoZerogr)
+
+kp <- plotKaryotype(plot.type=4, main="plot.type=4", genome = "hg38", chromosomes = "chrX")
+kpPlotRainfall(kp, data=gr_NoZero_snp, r0=0.3, r1=0.5)
+
 kp <- plotKaryotype(plot.type=4, main="plot.type=4", genome = "hg38", chromosomes = "chrX")
 kpPlotRainfall(kp, data=gr_Unique_snp[gr_Unique_snp$sample == "Woman1",] , r0 = 0.1, r1=0.2)
 
@@ -154,5 +165,8 @@ kp_cov <- plotKaryotype(plot.type = 4, main="plot of COV for Woman1", genome = "
 kpPoints(karyoplot = kp_cov , data=Woman1_cov5k_loggr, chr =  seqnames(Woman1_cov5k_loggr), x = start(Woman1_cov5k_loggr), col = "black", y=Woman1_cov5k_loggr$coverage)
 
 
-
+UPIC_NOZero <- subset(UPIC_cov5k, coverage > 0)
+UPIC_NOZero_log <- UPIC_NOZero
+UPIC_NOZero_log$coverage <- log10(UPIC_NOZero$coverage)
+UPIC_NOzero_gr <- toGRanges(UPIC_NOZero)
 
