@@ -7,29 +7,29 @@
 #this function does not work as intended due to the spaces in the name of the harddrive.
 #It works when you change the pointer to the direct path will lead to the cat function working as intended.
 
-cat /media/god/My Book Duo1/Emil/Control/sample | while read sample
+cat /media/MY/files/sample | while read sample
 do
 
 echo $sample
-control=/media/god/LaCie/GTEx_-50_females_whole_genome_seq/batch2
-Input1=/media/god/My Book Duo1/Emil/Control/untrimmed/$sample'_'1.fastq.gz
-Input2=/media/god/My Book Duo1/Emil/Control/untrimmed/$sample'_'2.fastq.gz
+control=/media/base/files/Woman_WGS/batch2
+Input1=/media/MY/files/untrimmed/$sample'_'1.fastq.gz
+Input2=/media/MY/files/untrimmed/$sample'_'2.fastq.gz
 
 #Have samtools view function where the genome is and becomes a sorted bamfile.
 samtools view -b -@32 $control/$sample.cram | samtools sort -o $sample.bam -@32 -n - 
 
-samtools fastq -@32 -1 /media/god/My Book Duo1/Emil/Control/untrimmed/$sample'_'1.fastq.gz -2 /media/god/My Book Duo1/Emil/Control/untrimmed/$sample'_'2.fastq.gz  $sample.bam
+samtools fastq -@32 -1 /media/MY/files/untrimmed/$sample'_'1.fastq.gz -2 /media/MY/files/untrimmed/$sample'_'2.fastq.gz  $sample.bam
 
 rm $sample.bam
 
 #removes the bam file intermediates so they dont take up unneccesary space on the disks.
 # Here pointers for the reference genome and the pointers for the BWA and fastq.
-ref_bwa_mem=/media/god/data1/genome_indexes/bwa/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna
-trimmedin1=/media/god/My Book Duo1/Emil/Control/trimmed/trimmed.$sample'_'1.fastq.gz
-trimmedin2=/media/god/My Book Duo1/Emil/Control/trimmed/trimmed.$sample'_'2.fastq.gz
+ref_bwa_mem=/media/genome_indexes/bwa/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna
+trimmedin1=/media/MY/files/trimmed/trimmed.$sample'_'1.fastq.gz
+trimmedin2=/media/MY/files/trimmed/trimmed.$sample'_'2.fastq.gz
 ID=$(echo $sample | cut -d'-' -f1,2)
 SM=$(echo $sample | cut -d'-' -f1,2)
-Aligned=/media/god/data1/Emil/Control/aligned/$sample.aligned.bam
+Aligned=/media/MY/files/aligned/$sample.aligned.bam
 echo $ID
 echo $SM
 echo $Input1
@@ -37,15 +37,15 @@ echo $Input2
 
 # software
 sambamba=/media/god/data1/software/sambamba-0.7.1-linux-static
-fastp=/media/god/data1/software/fastp
-gatk=/media/god/data1/software/gatk-4.2.6.1/gatk
-igv=/media/god/data1/software/IGV_Linux_2.8.0
+fastp=/media/software/fastp
+gatk=/media/software/gatk-4.2.6.1/gatk
+igv=/media/software/IGV_Linux_2.8.0
 
 # quality trimming
-$fastp -i /media/god/My Book Duo1/Emil/Control/untrimmed/$sample'_'1.fastq.gz \
--I /media/god/My Book Duo1/Emil/Control/untrimmed/$sample'_'2.fastq.gz \
--o /media/god/My Book Duo1/Emil/Control/trimmed/trimmed.$sample'_'1.fastq.gz \
--O /media/god/My Book Duo1/Emil/Control/trimmed/trimmed.$sample'_'2.fastq.gz
+$fastp -i /media/MY/files/untrimmed/$sample'_'1.fastq.gz \
+-I /media/MY/files/untrimmed/$sample'_'2.fastq.gz \
+-o /media/MY/files/trimmed/trimmed.$sample'_'1.fastq.gz \
+-O /media/MY/files/trimmed/trimmed.$sample'_'2.fastq.gz
 
 # trimming of the data to remove primers from the sequences.
 rm $Input1
@@ -57,42 +57,42 @@ rm $Input2
 #Version: 0.7.17-r1188
 
 bwa mem -t32 -M -R "@RG\tID:$ID\tSM:$SM\tPL:ILLUMINA:150" $ref_bwa_mem\
-/media/god/My Book Duo1/Emil/Control/trimmed/trimmed.$sample'_'1.fastq.gz \
-/media/god/My Book Duo1/Emil/Control/trimmed/trimmed.$sample'_'1.fastq.gz \ | samtools sort -o /media/god/data1/Emil/Control/aligned/$sample.aligned.bam -@32 -
+/media/MY/files/trimmed/trimmed.$sample'_'1.fastq.gz \
+/media/MY/files/trimmed/trimmed.$sample'_'1.fastq.gz \ | samtools sort -o /media/MY/files/aligned/$sample.aligned.bam -@32 -
 
 #Run an index to run the view functions to create just the X chromosome file.
 #Creates the pointer for the index file for the index function so the bai files get to the bam files.
 rm $trimmedin1
 rm $trimmedin2
 
-bai=/media/god'/My Book Duo1'/Emil/Control/aligned/$sample.aligned.bam.bai
+bai=/media/MY/files/aligned/$sample.aligned.bam.bai
 #Rerun all the control samples from here in the control group. Something didnt go correctly from here. The pointer to bai was wrong.
-samtools index -b -@32 /media/god/data1/Emil/Control/aligned/$sample.aligned.bam \
-/media/god'/My Book Duo1'/Emil/Control/aligned/$sample.aligned.bam.bai
+samtools index -b -@32 /media/MY/files/aligned/$sample.aligned.bam \
+/media/MY/files/aligned/$sample.aligned.bam.bai
 
-AlignedX=/media/god'/My Book Duo1'/Emil/Control/alignedXchr/$sample.AlignedXChr.bam
+AlignedX=/media/MY/files/alignedXchr/$sample.AlignedXChr.bam
 
 #This is the point where the aligned genome can be split to just X chromosome
-samtools view -b -@32 /media/god/data1/Emil/Control/aligned/$sample.aligned.bam chrX > /media/god'/My Book Duo1'/Emil/Control/alignedXchr/$sample.AlignedXChr.bam
+samtools view -b -@32 /media/MY/files/aligned/$sample.aligned.bam chrX > /media/MY/files/alignedXchr/$sample.AlignedXChr.bam
 
 #Reverse all the UPIC-tags to the sample tag so the script can flow.
-NodupX=/media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam 
+NodupX=/media/MY/files/NodupXchr/$sample.NodupXchr.bam 
 # Finish this pointer with the folder. 
 #Samabamba version is 0.7.1-linux-static 
 # -r to remove the duplicates located on the file. -r is the function that removes the dups instead of just marking them. 
-$sambamba markdup -r -t32 /media/god'/My Book Duo1'/Emil/Control/alignedXchr/$sample.AlignedXChr.bam /media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam
-Haplotype=/media/god'/My Book Duo1'/Emil/Control/haplotypecaller/$sample.Haplotype.g.vcf.gz
+$sambamba markdup -r -t32 /media/MY/files/alignedXchr/$sample.AlignedXChr.bam /media/MY/files/NodupXchr/$sample.NodupXchr.bam
+Haplotype=/media/MY/files/haplotypecaller/$sample.Haplotype.g.vcf.gz
 #rm $Aligned
 #Got a separate version from the UPIC from björn just have to do the indexing.
-baiNoX=/media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam.bai
-samtools index -b -@32 /media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam \
-/media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam.bai
+baiNoX=/media/MY/files/NodupXchr/$sample.NodupXchr.bam.bai
+samtools index -b -@32 /media/MY/files/NodupXchr/$sample.NodupXchr.bam \
+/media/MY/files/NodupXchr/$sample.NodupXchr.bam.bai
 #This bai files needs to be here or it will not run correctly in the haplotypecaller. 
 
 #Here the GATK pipelinestarts and haplotypecaller is the only step needs to be in the loop. 
 #Due to the rest being combined to one file in the step after this in hte genomicsDBimport step.
-$gatk HaplotypeCaller -R $ref_bwa_mem -I /media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam \
--O /media/god'/My Book Duo1'/Emil/Control/haplotypecaller/$sample.Haplotype.g.vcf.gz \
+$gatk HaplotypeCaller -R $ref_bwa_mem -I /media/MY/files/NodupXchr/$sample.NodupXchr.bam \
+-O /media/MY/files/haplotypecaller/$sample.Haplotype.g.vcf.gz \
 -ERC GVCF -G StandardAnnotation -G AS_StandardAnnotation -G StandardHCAnnotation
 
 #Loop ends here due to the files being combined for the genmics db and will stay like that until at least the applyVQSR function.
@@ -105,9 +105,9 @@ done
 # Generate input_for_GenomicDBImport.txt, a tab-separated file that contains sample name and sample paths so the perl and perl2 script can work properly.
 # input_for_GenomicDBImport.txt should look like this: This file is created in this format.
 
-#GTEX-13PLJ /media/god/data1/Emil/haplotypecaller/GTEX-13PLJ-0003-SM-6WSCN.Haplotype.g.vcf.gz
-#GTEX-UPIC /media/god/data1/Emil/haplotypecaller/GTEX-UPIC-0004-SM-5SOEF.Haplotype.g.vcf.gz
-#GTEX-ZZPU /media/god/data1/Emil/haplotypecaller/GTEX-ZZPU-0003-SM-6WBUC.Haplotype.g.vcf.gz
+#Woman1 /media/MY/files/haplotypecaller/Woman1.Haplotype.g.vcf.gz
+#Woman2 /media/MY/files/haplotypecaller/Woman2.Haplotype.g.vcf.gz
+#Woman3 /media/MY/files/haplotypecaller/Woman3.Haplotype.g.vcf.gz
 
 
  
@@ -126,7 +126,7 @@ done
 ################################################# IMPORTANT ##########################################################################
 
 # This is moved to perl.sh so the code will be found there with comments. For this part until Variantcaller Runs in two different scripts perlsh and perl2.sh . Also very important to fix the required txt files. 
-#cut -f2 /media/god/data1/genome_indexes/bwa/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict | cut -d':' -f2 | cut -d'_' -f1 | sort | uniq | grep -v 'Un' | grep -v 'EBV' | grep -v '1.6' > contigs.txt 
+#cut -f2 /media/genome_indexes/bwa/GCA_000001405.15_GRCh38_no_alt_analysis_set.dict | cut -d':' -f2 | cut -d'_' -f1 | sort | uniq | grep -v 'Un' | grep -v 'EBV' | grep -v '1.6' > contigs.txt 
 #run this in the terminal and make sure to not have a folder och file named chrX or any chr[int] names.
 #contigs.txt should look like this:
 #chr1
@@ -146,24 +146,24 @@ done
 
 # first make a file with the location of all outputs from GenotypeGVCFs.
 
-# input_variant_files.list looks like the following:
+# input_variant_files.list looks like the following: this step is done in a separate 
 #Changed this to have a pointer to each file this is not optimised for a large number of samples then you need to use the list structure hinted at above.
-#in3=/media/god/data1/Emil/haplotypecaller/GTEX-13PLJ-0003-SM-6WSCN.Haplotype.g.vcf.gz
-#in2=/media/god/data1/Emil/haplotypecaller/GTEX-UPIC-0004-SM-5SOEF.Haplotype.g.vcf.gz
-#in1=/media/god/data1/Emil/haplotypecaller/GTEX-ZZPU-0003-SM-6wBUC.Haplotype.g.vcf.gz
+#in3=/media/MY/files/haplotypecaller/Woman1.Haplotype.g.vcf.gz
+#in2=/media/MY/files/haplotypecaller/Woman2.Haplotype.g.vcf.gz
+#in1=/media/MY/files/haplotypecaller/Woman3.Haplotype.g.vcf.gz
 # Then run MergeVcfs to merge all the contig-split files into one vcf.
 #$gatk MergeVcfs -I $in1 -I $in2 -I $in3 -O allSamples.vcf- This step is not done and due to not needing this due to only focusing on the X chromosome. 
 # The merge part of the script is only needed when you have multiple chromosomes from the genomicsDb perl script.  
 
 
-#Fix during friday to have the correct inputs so you can handle the data later. 
+#Fix during friday to have the correct inputs so you can handle the data later. this is done in the perl script
 #$gatk GenotypeGVCFs -R $ref_bwa_mem -V Input.Xchr.g.vcf.gz -O $sample.GenotypeX.g.vcg.gz this part is done in the perl script check perl2 if you need more info on it.
 
 #### VariantRecalibrator ####
 # SNP modeling pass
-out_vcf_GenotypeGVCFs=/media/god'/My Book Duo1'/Emil/Control/fin/All_chrX.vcf.gz
-variants_folder=/media/god/data1/genome_indexes/variants
-vcf_temp=/media/god'/My Book Duo1'/Emil/Control/tmp
+out_vcf_GenotypeGVCFs=/media/MY/files/fin/All_chrX.vcf.gz
+variants_folder=/media/genome_indexes/variants
+vcf_temp=/media/MY/files/Control/tmp
 
 output_vcf_SNP_recalfile_VariantRecalibrator=$vcf_temp/VarRecal.snps.recalfile.vcf
 output_tranches_SNP_VariantRecalibrator=$vcf_temp/VarRecal.snps.VariantRecalibrator.tranches
@@ -242,7 +242,7 @@ output_vcf_INDEL_ApplyVQSR=$vcf_temp/ApplyVSQRControl.recalibrated.vcf
 #prefix=`dirname $(readlink $0 || echo $0)`
 
 # Check whether or not to use the bundled JDK
-#written in command line is /media/god/data1/software/IGV_Linux_2.8.0/igv.sh
+#written in command line is /media/software/IGV_Linux_2.8.0/igv.sh
 #To start the igv program.
 
 
