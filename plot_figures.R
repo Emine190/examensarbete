@@ -2,7 +2,7 @@
 install.packages("BiocManager")
 install.packages("tidyverse")
 #BiocManager::install("rtracklayer")
-setwd("/media/god/jellyfish/Emil/R/")
+setwd("/media/MY/files/R/")
 BiocManager::install(version = "3.16")
 library(BiocManager)
 library(cowplot)
@@ -19,13 +19,13 @@ library(rtracklayer)
 #temp = list.files(pattern="*.vcf")
 #myfiles = lapply(temp, read.delim)
 #imports teh data of the three non-mosaic women
-UPIC <- fread("het_UPIC.bed")
-PLJ <- fread("het_13PLJ.bed")
-ZZPU <- fread("het_ZZPU.bed")
+Woman1 <- fread("het_Woman1.bed")
+Woman2 <- fread("het_Woman2.bed")
+Woman3 <- fread("het_Woamn3.bed")
 
-#check which SNPs are in shared
-kek1 <- intersect(UPIC$V2, PLJ$V2)
-kek2 <- intersect(kek1, ZZPU$V2)
+#check which SNPs are in shared between all three women
+kek1 <- intersect(Woman1$V2, Woman2$V2)
+kek2 <- intersect(kek1, Woman3$V2)
 
 #Make a file with all of them together
 bur <- rbind(UPIC, PLJ, ZZPU)
@@ -42,9 +42,9 @@ shortz <- dplyr::select(bur_filterOG, chr, start, end, sample)
 gr_bur_filterOG <- toGRanges(shortz)
 
 kp <- plotKaryotype(plot.type=3, main="plot.type=3", genome = "hg38", chromosomes = "chrX")
-kpPoints(karyoplot = kp , data=gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-UPIC-0004-SM-5SOEF",], chr =  seqnames(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-UPIC-0004-SM-5SOEF",]), x = start(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-UPIC-0004-SM-5SOEF",]), col = "blue", y=0.05)
-kpPoints(karyoplot = kp , data=gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-13PLJ-0003-SM-6WSSCN",], chr =  seqnames(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-13PLJ-0003-SM-6WSSCN",]), x = start(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-13PLJ-0003-SM-6WSSCN",]), col = "red", y=0.15)
-kpPoints(karyoplot = kp , data=gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-ZZPU-0003-SM-6WBUC",], chr =  seqnames(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-ZZPU-0003-SM-6WBUC",]), x = start(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-ZZPU-0003-SM-6WBUC",]), col = "grey", y=0.25)
+kpPoints(karyoplot = kp , data=gr_bur_filterOG[gr_bur_filterOG$sample == "Woman1",], chr =  seqnames(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-UPIC-0004-SM-5SOEF",]), x = start(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-UPIC-0004-SM-5SOEF",]), col = "blue", y=0.05)
+kpPoints(karyoplot = kp , data=gr_bur_filterOG[gr_bur_filterOG$sample == "Woman2",], chr =  seqnames(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-13PLJ-0003-SM-6WSSCN",]), x = start(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-13PLJ-0003-SM-6WSSCN",]), col = "red", y=0.15)
+kpPoints(karyoplot = kp , data=gr_bur_filterOG[gr_bur_filterOG$sample == "Woman3",], chr =  seqnames(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-ZZPU-0003-SM-6WBUC",]), x = start(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-ZZPU-0003-SM-6WBUC",]), col = "grey", y=0.25)
 
 
 
@@ -80,22 +80,22 @@ kp <- plotKaryotype(plot.type=3, main="plot.type=3", genome = "hg38", chromosome
   
 #Import the bed files from the COV files 
 # first set a new working directory so the importing of the files gets easier.
-  setwd("/media/god/jellyfish/Emil/R/sv/cov/")
+  setwd("/media/MY/files/R/sv/cov/")
 
-  UPIC_cov <- fread("GTEX-UPIC_cov..bed")
-  UPIC_cov_log <- UPIC_cov
-  UPIC_cov_log$coverage <- log10(UPIC_cov$coverage +1)
-  UPIC_COV_gr <- toGRanges(UPIC_cov)
-  UPIC_cov_loggr <- toGRanges(UPIC_cov_log)
+  Woman1_cov <- fread("Woman1_cov..bed")
+  Woman1_cov_log <- Woman1_cov
+  Woman1_cov_log$coverage <- log10(Woman1_cov$coverage +1)
+  Woman1_COV_gr <- toGRanges(Woman1_cov)
+  Woman1_cov_loggr <- toGRanges(Woman1_cov_log)
   
-  PLJ_COV <-fread("GTEX-13PLJ_cov..bed")
-  PLJ_COV_GR <- toGRanges(PLJ_COV)
-  PLJ_cov_log <- PLJ_COV
-  PLJ_cov_log$coverage <- log10(PLJ_COV$coverage)
-  PLJ_cov_loggr <- toGRanges(PLJ_cov_log)
+  Woman2_COV <-fread("Woman2_cov..bed")
+  Woman2_COV_GR <- toGRanges(Woman2_COV)
+  Woman2_cov_log <- Woman2_COV
+  Woman2_cov_log$coverage <- log10(Woman2_COV$coverage)
+  Woman2_cov_loggr <- toGRanges(Woman2_cov_log)
   
-  ZZPU_COV <- fread("GTEX-ZZPU_cov..bed")
-  ZZPU_COV_GR <- toGRanges(ZZPU_COV)
+ Woman3_COV <- fread("Woman3_cov..bed")
+  Woman3_COV_GR <- toGRanges(Woman3_COV)
   ZZPU_cov_log <- ZZPU_COV
   ZZPU_cov_log$coverage <- log10(ZZPU_COV$coverage)
   ZZPU_cov_loggr <- toGRanges(ZZPU_cov_log)
@@ -128,7 +128,7 @@ kpPlotRegions(kp_Region, data = UPIC_cov_loggr,r0=0, r1=0.1, col="red")
 
 
 #the SV files to be read in.
-setwd("/media/god/jellyfish/Emil/R")
+setwd("/media/MY/files/R")
 
 UPIC_cov5k <- fread("GTEX-UPIC_cov_5K.bed")
 UPIC_cov5k_log <- UPIC_cov5k
