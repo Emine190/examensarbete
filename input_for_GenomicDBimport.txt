@@ -1,2 +1,2 @@
-GTEX-15ETS-0002-SM-7DLGI  /media/god/path/to/haplotype/GTEX-15ETS-0002-SM-7DLGI
-this is a type exampel berfore i get permission to put the whole thing on to use this space as my appendix for the final report. 
+Woman1  /media/MY/files/haplotypecaller/Woman1
+this is a type exampel  
