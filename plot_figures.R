@@ -274,6 +274,19 @@ kp_cov <- plotKaryotype(plot.type = 7, main="     Woman1_5k", genome = "hg38", c
 kpPoints(karyoplot = kp_cov , data=UPIC_NOzero_gr, chr =  seqnames(UPIC_NOzero_gr), x = start(UPIC_NOzero_gr), col = "blue", y=UPIC_NOzero_gr$coverage)
 
 
-UPICVCFR <- read.vcfR( 'GTEX-UPIC..vcf', verbose= FALSE )
-PLJVCFR <- read.vcfR('GTEX-13PLJ..vcf', verbose = FALSE)
-ZZPUVCFR <- read.vcfR('GTEX-ZZPU..vcf', verbose= FALSE)
+
+Woman1_ploidies <- read.table("/media/god/jellyfish/Emil/R/GTEX-UPIC..ploidies.tab")
+Woman2_ploidies <- read.table("/media/god/jellyfish/Emil/R/GTEX-13PLJ..ploidies.tab")
+Woman3_ploidies <- read.table("/media/god/jellyfish/Emil/R/GTEX-ZZPU..ploidies.tab")
+
+
+Woman1_ploidies <- Woman1_ploidies[2:24,]
+Woman2_ploidies <- Woman2_ploidies[2:24,]
+Woman3_ploidies <- Woman3_ploidies[2:24,]
+
+colnames(Woman1_ploidies) <- c("Chromosome", "Ploidy", "Ploidy_rounded", "Mean_coverage")
+colnames(Woman2_ploidies) <- c("Chromosome", "Ploidy", "Ploidy_rounded", "Mean_coverage")
+colnames(Woman3_ploidies) <- c("Chromosome", "Ploidy", "Ploidy_rounded", "Mean_coverage")
+
+ggplot(Woman1_ploidies)+
+  geom_point(aes(x= V4,  y= V2, ))
