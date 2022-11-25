@@ -274,19 +274,80 @@ kp_cov <- plotKaryotype(plot.type = 7, main="     Woman1_5k", genome = "hg38", c
 kpPoints(karyoplot = kp_cov , data=UPIC_NOzero_gr, chr =  seqnames(UPIC_NOzero_gr), x = start(UPIC_NOzero_gr), col = "blue", y=UPIC_NOzero_gr$coverage)
 
 
+Woman1_ploidies <- read.table("/media/god/jellyfish/Emil/R/GTEX-UPIC..ploidies.tab", header = T)
+Woman2_ploidies <- read.table("/media/god/jellyfish/Emil/R/GTEX-13PLJ..ploidies.tab", header = T)
+Woman3_ploidies <- read.table("/media/god/jellyfish/Emil/R/GTEX-ZZPU..ploidies.tab", header = T)
 
-Woman1_ploidies <- read.table("/media/god/jellyfish/Emil/R/GTEX-UPIC..ploidies.tab")
-Woman2_ploidies <- read.table("/media/god/jellyfish/Emil/R/GTEX-13PLJ..ploidies.tab")
-Woman3_ploidies <- read.table("/media/god/jellyfish/Emil/R/GTEX-ZZPU..ploidies.tab")
+Woman1_ploidies <- Woman1_ploidies[1:23,]
+Woman2_ploidies <- Woman2_ploidies[1:23,]
+Woman3_ploidies <- Woman3_ploidies[1:23,]
+
+k="Woman1"
+p="Woman2"
+m="Woman3"
+
+Woman1_ploidies$sample <- k
+Woman2_ploidies$sample <- p
+Woman3_ploidies$sample <- m
+Women <- rbind(Woman1_ploidies,Woman2_ploidies,Woman3_ploidies)
 
 
-Woman1_ploidies <- Woman1_ploidies[2:24,]
-Woman2_ploidies <- Woman2_ploidies[2:24,]
-Woman3_ploidies <- Woman3_ploidies[2:24,]
+standard_contigs <- c(paste0(rep("chr", 22), seq(1,22,1)), "chrX")
 
-colnames(Woman1_ploidies) <- c("Chromosome", "Ploidy", "Ploidy_rounded", "Mean_coverage")
-colnames(Woman2_ploidies) <- c("Chromosome", "Ploidy", "Ploidy_rounded", "Mean_coverage")
-colnames(Woman3_ploidies) <- c("Chromosome", "Ploidy", "Ploidy_rounded", "Mean_coverage")
+C1 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-11P81..ploidies.tab", header = T)
+C2 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-131XW..ploidies.tab", header = T)
+C3 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-145MI..ploidies.tab", header = T)
+C4 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-14LZ3..ploidies.tab", header = T)
+C5 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-1A32A..ploidies.tab", header = T)
+C6 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-1CAMS..ploidies.tab", header = T)
+C7 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-1GF9X..ploidies.tab", header = T)
+C8 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-1JMOU..ploidies.tab", header = T)
+C9 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-T2IS..ploidies.tab", header = T)
+C10 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-Y5LM..ploidies.tab", header = T)
+C11 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-YJ8O..ploidies.tab", header = T)
+C12 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-ZV6S..ploidies.tab", header = T)
 
-ggplot(Woman1_ploidies)+
-  geom_point(aes(x= V4,  y= V2, ))
+C1 <-C1[1:23,]
+C2 <-C2[1:23,]
+C3 <-C3[1:23,]
+C4 <-C4[1:23,]
+C5 <-C5[1:23,]
+C6 <-C6[1:23,]
+C7 <-C7[1:23,]
+C8 <-C8[1:23,]
+C9 <-C9[1:23,]
+C10 <-C10[1:23,]
+C11 <-C11[1:23,]
+C12 <-C12[1:23,]
+C="Control"
+Control_Cov <- rbind(C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,C11,C12)
+Control_Cov$sample <- C
+
+Women <- rbind(Women,Control_Cov)
+source("/media/god/jellyfish/Emil/AL_ggplot_themes.R")
+library(rstatix)
+
+women_stats <- Women[Women$Chromosome %in% standard_contigs,] %>% dplyr::group_by(Chromosome) %>% rstatix::get_summary_stats(Ploidy, type = "common")
+
+Control_stats <- Control_Cov[Control_Cov$Chromosome %in% standard_contigs,] %>% dplyr::group_by(Chromosome) %>% rstatix::get_summary_stats(Ploidy, type = "common")
+
+ggplot(Women[Women$Chromosome %in% standard_contigs,], aes(x= factor(Chromosome, levels = standard_contigs),  y= Ploidy ))+
+  stat_summary(geom="line", fun="mean", aes(group=1))+
+  geom_pointrange(data = women_stats, aes(y=mean, ymin=mean-sd, ymax=mean+sd, group=1), lty=2)+
+  #geom_line(data = women_stats, aes(y=mean+sd, group=1), lty=2)+
+  geom_point(aes(color=sample))+
+  theme_AL_box_rotX()+
+  theme(
+    legend.position = "right", plot.title = element_text(size=12))+
+  ggtitle("PLoidy plot")+
+    labs(x="")+
+  geom_hline(yintercept = 2, lty=2)
+
+
+
+Women[Women$Chromosome %in% standard_contigs,] %>% dplyr::group_by(Chromosome) %>% kruskal_test(Ploidy ~ Chromosome)
+
+ggplot(Women[Women$Chromosome %in% standard_contigs,], aes(x=factor(Chromosome, levels = standard_contigs), y=Ploidy)) + geom_boxplot() + ggbeeswarm::geom_quasirandom(aes(col= sample))+
+  #geom_line(data = Control_stats, aes(y=mean+sd, group=1), lty=2)+
+  geom_point(data = Control_stats,aes(x=Chromosome, y=median))+
+  theme_AL_box_rotX()
