@@ -104,8 +104,8 @@ genes.data <- mergeTranscripts(genes.data)
 
 
 #Create the Zoom file for the XIC regions
-zoom.region <- toGRanges(data.frame("chrX", 72e6, 74.5e6))
-gene <- c("XIST", "JPX", "TSIX", "FTX")
+zoom.region <- toGRanges(data.frame("chrX", 72e6, 74.3e6))
+
 Just_XIC72k <-subset(NoZerogr, NoZerogr$start > 73792000)
 Just_XICSNP74k <- subset(Just_XIC72k, Just_XIC72k$start < 74295000)
 XICSNPS_GR <- toGRanges(Just_XICSNP74k)
@@ -117,7 +117,7 @@ kpPlotRainfall(karyoplot = kp , data=XICSNPS_GR, r0=0.1, r1=0.3, col= "black")
 
 #Xact region plot 
 #Create the Zoom file for the Xact regions
-zoom.XACT <- toGRanges(data.frame("chrX", 113e6, 114e6))
+zoom.XACT <- toGRanges(data.frame("chrX", 113e6, 114.5e6))
 Just_XICSNP113k <- subset(NoZerogr, NoZerogr$start > 113112000)
 Just_XICSNP114k <- subset(Just_XICSNP113k, Just_XICSNP113k$start < 114512000)
 XACTSNPs <- toGRanges(Just_XICSNP114k)
