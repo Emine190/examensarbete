@@ -21,42 +21,42 @@ library(dplyr)
 
 #imports the data of the three non-mosaic women
 
-UPIC <- fread("het_UPIC.bed")
-PLJ <- fread("het_13PLJ.bed")
-ZZPU <- fread("het_ZZPU.bed")
+Woman1 <- fread("het_Woman1.bed")
+Woman2 <- fread("het_Woman2.bed")
+Woman3 <- fread("het_Woman3.bed")
 
 #check which SNPs are in shared
-kek1 <- intersect(UPIC$V2, PLJ$V2)
-kek2 <- intersect(kek1, ZZPU$V2)
+Cmpare1 <- intersect(Woman1$V2, Woman2$V2)
+Compared <- intersect(Compare1, Woman3$V2)
 
 #Make a file with all of them together
-bur <- rbind(UPIC, PLJ, ZZPU)
+Combined <- rbind(Woman1, Woman2, Woman3)
 
-bur_filterOG <- as.data.frame(bur[bur$V2 %in% kek2,])
+SNPs_inAll <- as.data.frame(Combined[Combined$V2 %in% Compared,])
 
-colnames(bur_filterOG) <- c("chr", "start", "ref", "alt", "depth", "sample")
+colnames(SNPs_inAll) <- c("chr", "start", "ref", "alt", "depth", "sample")
 
-bur_filterOG$end <- bur_filterOG$start + 1
-bur_filterOG$width <- 1
+SNPs_inAll$end <- SNPs_inAll$start + 1
+SNPs_inAll$width <- 1
 
-shortz <- dplyr::select(bur_filterOG, chr, start, end, sample)
+shortz <- dplyr::select(SNPs_inAll, chr, start, end, sample)
 
-gr_bur_filterOG <- toGRanges(shortz)
+gr_SNPs_inAll <- toGRanges(shortz)
 
 #Plots the SNPs of the three women. This is a control to check so the SNPs for them are the same or if eny sticks out to redo the part above.
 kp <- plotKaryotype(plot.type=3, main="Blue= Woman1,RED ", genome = "hg38", chromosomes = "chrX")
-kpPoints(karyoplot = kp , data=gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-UPIC-0004-SM-5SOEF",], chr =  seqnames(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-UPIC-0004-SM-5SOEF",]), x = start(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-UPIC-0004-SM-5SOEF",]), col = "blue", y=0.05)
-kpPoints(karyoplot = kp , data=gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-13PLJ-0003-SM-6WSSCN",], chr =  seqnames(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-13PLJ-0003-SM-6WSSCN",]), x = start(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-13PLJ-0003-SM-6WSSCN",]), col = "red", y=0.15)
-kpPoints(karyoplot = kp , data=gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-ZZPU-0003-SM-6WBUC",], chr =  seqnames(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-ZZPU-0003-SM-6WBUC",]), x = start(gr_bur_filterOG[gr_bur_filterOG$sample == "GTEX-ZZPU-0003-SM-6WBUC",]), col = "grey", y=0.25)
+kpPoints(karyoplot = kp , data=gr_SNPs_inAll[gr_SNPs_inAll$sample == "Woman1",], chr =  seqnames(gr_SNPs_inAll[gr_SNPs_inAll$sample == "Woman1",]), x = start(gr_SNPs_inAll[gr_SNPs_inAll$sample == "Woman1",]), col = "blue", y=0.05)
+kpPoints(karyoplot = kp , data=gr_SNPs_inAll[gr_SNPs_inAll$sample == "Woman2",], chr =  seqnames(gr_SNPs_inAll[gr_SNPs_inAll$sample == "Woman2",]), x = start(gr_SNPs_inAll[gr_SNPs_inAll$sample == "Woman2",]), col = "red", y=0.15)
+kpPoints(karyoplot = kp , data=gr_SNPs_inAll[gr_SNPs_inAll$sample == "Woman3",], chr =  seqnames(gr_SNPs_inAll[gr_SNPs_inAll$sample == "Woman3",]), x = start(gr_SNPs_inAll[gr_SNPs_inAll$sample == "Woman3",]), col = "grey", y=0.25)
 
 
 #Import the Controls
 Control <- fread("het_Control.bed")
 #apply the control to solo out the one unique for the 3 women.
-kek3 <- setdiff(kek2, Control$V2)
+Unique <- setdiff(Compared, Control$V2)
 
 #Creates a set with the SNPs that are not present in the control.
-Unique_snp <- as.data.frame(bur[bur$V2 %in% kek3,])
+Unique_snp <- as.data.frame(>Combined[Combined$V2 %in% Unique,])
 
 colnames(Unique_snp) <- c("chr", "start", "ref", "alt", "depth", "sample")
 
@@ -90,8 +90,8 @@ kpPoints(karyoplot = kp , data=gr_Unique_snp, chr =  seqnames(gr_Unique_snp), x 
 
 #plot the SNPs from the three women, these are NOT filtered.
 kp <- plotKaryotype(plot.type=3, main="SNPs for non-mosaic", genome = "hg38", chromosomes = "chrX")
-kpPlotRainfall(karyoplot = kp , data=gr_bur_filterOG, r0=0.1, r1=0.3, col= "black")
-kpPoints(karyoplot = kp , data=gr_bur_filterOG, chr =  seqnames(gr_bur_filterOG), x = start(gr_bur_filterOG), col = "black", y=-0.15)
+kpPlotRainfall(karyoplot = kp , data=gr_SNPs_inAll, r0=0.1, r1=0.3, col= "black")
+kpPoints(karyoplot = kp , data=gr_SNPs_inAll, chr =  seqnames(gr_SNPs_inAll), x = start(gr_SNPs_inAll), col = "black", y=-0.15)
 
 # check if you will get any value from plotting the SNPs from just the XIC region and how that can further impact the other figures.
 
