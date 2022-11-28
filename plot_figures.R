@@ -3,7 +3,7 @@ install.packages("BiocManager")
 install.packages("tidyverse")
 
 #BiocManager::install("rtracklayer")
-setwd("/media/god/jellyfish/Emil/R/")
+setwd("/path/to/dir/R/")
 #BiocManager::install(version = "3.16")
 BiocManager::install("AnnotationDbi")
 library(BiocManager)
@@ -106,6 +106,7 @@ genes.data <- mergeTranscripts(genes.data)
 #Create the Zoom file for the XIC regions
 zoom.region <- toGRanges(data.frame("chrX", 72e6, 74.3e6))
 
+
 Just_XIC72k <-subset(NoZerogr, NoZerogr$start > 73792000)
 Just_XICSNP74k <- subset(Just_XIC72k, Just_XIC72k$start < 74295000)
 XICSNPS_GR <- toGRanges(Just_XICSNP74k)
@@ -113,7 +114,12 @@ XICSNPS_GR <- toGRanges(Just_XICSNP74k)
 # PLots a figure with the l,ocation on the selected region.
 kp <- plotKaryotype(plot.type=3, main="SNPs for XIC-region 71mb to 74mb", genome = "hg38", chromosomes = "chrX", zoom = zoom.region)
 kpPlotRainfall(karyoplot = kp , data=XICSNPS_GR, r0=0.1, r1=0.3, col= "black")
+#Zoom in further to the SNPs that are present.
+zoom.region <- toGRanges(data.frame("chrX", 74e6, 74.3e6))
 
+
+kp <- plotKaryotype(plot.type=3, main="SNPs for XIC-region 74mb to 74.3mb", genome = "hg38", chromosomes = "chrX", zoom = zoom.region)
+kpPlotRainfall(karyoplot = kp , data=XICSNPS_GR, r0=0.1, r1=0.3, col= "black")
 
 #Xact region plot 
 #Create the Zoom file for the Xact regions
@@ -131,79 +137,86 @@ kpPlotRainfall(karyoplot = kp , data=XACTSNPs, r0=0.1, r1=0.3, col= "black")
 
 #Import the bed files from the COV files 
 # first set a new working directory so the importing of the files gets easier.
-  setwd("/media/god/jellyfish/Emil/R/sv/cov/")
+  setwd("/path/to/directory/R/")
 
-  UPIC_cov <- fread("GTEX-UPIC_cov..bed")
-  UPIC_cov_log <- UPIC_cov
-  UPIC_cov_log$coverage <- log10(UPIC_cov$coverage +1)
-  UPIC_COV_gr <- toGRanges(UPIC_cov)
-  UPIC_cov_loggr <- toGRanges(UPIC_cov_log)
+  Woman1_cov <- fread("Woman1_cov..bed")
+  Woman1_COV_gr <- toGRanges(Woman1_cov)
+
+#If to high Cov values use the log outputs instead
+  Woman1_cov_log <- Woman1_cov
+  Woman1_cov_log$coverage <- log10(Woman1_cov$coverage +1)
+  Woman1_cov_loggr <- toGRanges(Woman1_cov_log)
   
-  PLJ_COV <-fread("GTEX-13PLJ_cov..bed")
-  PLJ_COV_GR <- toGRanges(PLJ_COV)
-  PLJ_cov_log <- PLJ_COV
-  PLJ_cov_log$coverage <- log10(PLJ_COV$coverage)
-  PLJ_cov_loggr <- toGRanges(PLJ_cov_log)
+  Woman2_COV <-fread("Woman2_cov..bed")
+  Woman2_COV_GR <- toGRanges(Woman2_COV)
   
-  ZZPU_COV <- fread("GTEX-ZZPU_cov..bed")
-  ZZPU_COV_GR <- toGRanges(ZZPU_COV)
-  ZZPU_cov_log <- ZZPU_COV
-  ZZPU_cov_log$coverage <- log10(ZZPU_COV$coverage)
-  ZZPU_cov_loggr <- toGRanges(ZZPU_cov_log)
+#If to high Cov values use the log outputs instead
+Woman2_cov_log <- Woman2_COV
+  Woman2_cov_log$coverage <- log10(Woman2_COV$coverage)
+  Woman2_cov_loggr <- toGRanges(Woman2_cov_log)
   
+  Woman3_COV <- fread("Woman3_cov..bed")
+  Woman3_COV_GR <- toGRanges(Woman3_COV)
+
+
+#If to high Cov values use the log outputs instead
+Woman3_cov_log <- Woman3_COV
+ Woman3_cov_log$coverage <- log10(Woman3_COV$coverage)
+  Woman3_cov_loggr <- toGRanges(Woman3_cov_log)
   
-  UPIC_NOZero <- filter(UPIC_cov, coverage > 0)
-  UPIC_NOZero_log <- UPIC_NOZero
+  #removes all teh tiles with 0 coverage
+  Woman1_NOZero <- filter(Woman1_cov, coverage > 0)
+  Woman1_NOZero_log <- Woman1_NOZero
  #If the coverage values are high then apply the 10log over the coverage column to get more managable values
-   UPIC_NOZero_log$coverage <- log10(UPIC_NOZero$coverage)
+   Woman1_NOZero_log$coverage <- log10(Woman1_NOZero$coverage)
   
-   UPIC_NOzero_gr <- toGRanges(UPIC_NOZero)
+   Woman1_NOzero_gr <- toGRanges(Woman1_NOZero)
  
   # Remove the reads over the Centromere. 
-  UPIC_NOZero <- filter(UPIC_cov, coverage > 0)
-  UPIC_filt_500 <- subset(UPIC_NOZero, start < 55000001 | start > 64995001)
-  UPIC_filt500_GR <- toGRanges(UPIC_filt_500)
+  Woman1_NOZero <- filter(Woman1_cov, coverage > 0)
+  Woman1_filt_500 <- subset(Woman1_NOZero, start < 55000001 | start > 64995001)
+  Woman1_filt500_GR <- toGRanges(Woman1_filt_500)
 
-  PLJ_NOZero <- filter(PLJ_COV, coverage > 0)
-  PLJ_filt_500 <- subset(PLJ_NOZero, start < 55000001 | start > 64995001)
-  PLJ_filt500_GR <- toGRanges(PLJ_filt_500)
+  Woman2_NOZero <- filter(Woman2_COV, coverage > 0)
+  Woman2_filt_500 <- subset(Woman2_NOZero, start < 55000001 | start > 64995001)
+  Woman2_filt500_GR <- toGRanges(Woman2_filt_500)
   
-  ZZPU_NOZero <- filter(ZZPU_COV, coverage > 0)
-  ZZPU_filt_500 <- subset(ZZPU_NOZero, start < 55000001 | start > 64995001)
-  ZZPU_filt500_GR <- toGRanges(ZZPU_filt_500)
+  Woman3_NOZero <- filter(Woman3_COV, coverage > 0)
+  Woman3_filt_500 <- subset(ZZPU_NOZero, start < 55000001 | start > 64995001)
+ Woman3_filt500_GR <- toGRanges(Woman3_filt_500)
   
   #PLots the coverage of all the non-mosaic women.
   kp_cov <- plotKaryotype(plot.type = 4, main="plot of COV for Woman1_500", genome = "hg38", chromosomes =c("chrX"))
-  kpPoints(karyoplot = kp_cov , data=UPIC_filt500_GR, chr =  seqnames(UPIC_filt500_GR), x = start(UPIC_filt500_GR), col = "black", y=UPIC_filt500_GR$coverage)
+  kpPoints(karyoplot = kp_cov , data=Woman1_filt500_GR, chr =  seqnames(Woman1_filt500_GR), x = start(Woman1_filt500_GR), col = "black", y=Woman1_filt500_GR$coverage)
   
   kp_cov <- plotKaryotype(plot.type = 4, main="plot of COV for Woman2_500", genome = "hg38", chromosomes =c("chrX"))
-  kpPoints(karyoplot = kp_cov , data=PLJ_filt500_GR, chr =  seqnames(PLJ_filt500_GR), x = start(PLJ_filt500_GR), col = "black", y=PLJ_filt500_GR$coverage)
+  kpPoints(karyoplot = kp_cov , data=Woman2_filt500_GR, chr =  seqnames(Woman2_filt500_GR), x = start(Woman2_filt500_GR), col = "black", y=Woman2_filt500_GR$coverage)
   
   kp_cov <- plotKaryotype(plot.type = 4, main="plot of COV for Woman3_500", genome = "hg38", chromosomes =c("chrX"))
-  kpPoints(karyoplot = kp_cov , data=ZZPU_filt500_GR, chr =  seqnames(ZZPU_filt500_GR), x = start(ZZPU_filt500_GR), col = "black", y=ZZPU_filt500_GR$coverage)
+  kpPoints(karyoplot = kp_cov , data=Woman3_filt500_GR, chr =  seqnames(Woman3_filt500_GR), x = start(Woman3_filt500_GR), col = "black", y=Woman3_filt500_GR$coverage)
   
   
 #here plot the specific Cov and Sv from the XIC region from the 500 tile files.
 kp_cov <- plotKaryotype(plot.type = 4, main="plot of COV for Woman1_500", genome = "hg38", chromosomes =c("chrX"), zoom=zoom.region)
-kpPoints(karyoplot = kp_cov , data=UPIC_filt500_GR, chr =  seqnames(UPIC_filt500_GR), x = start(UPIC_filt500_GR), col = "black", y=UPIC_filt500_GR$coverage)
+kpPoints(karyoplot = kp_cov , data=Woman1_filt500_GR, chr =  seqnames(Woman1_filt500_GR), x = start(Woman1_filt500_GR), col = "black", y=Woman1_filt500_GR$coverage)
 
 kp_cov <- plotKaryotype(plot.type = 4, main="plot of COV for Woman2_500", genome = "hg38", chromosomes =c("chrX"))
-kpPoints(karyoplot = kp_cov , data=PLJ_filt500_GR, chr =  seqnames(PLJ_filt500_GR), x = start(PLJ_filt500_GR), col = "black", y=PLJ_filt500_GR$coverage)
+kpPoints(karyoplot = kp_cov , data=Woman2_filt500_GR, chr =  seqnames(Woman2_filt500_GR), x = start(Woman2_filt500_GR), col = "black", y=Woman2_filt500_GR$coverage)
 
 kp_cov <- plotKaryotype(plot.type = 4, main="plot of COV for Woman3_500", genome = "hg38", chromosomes =c("chrX"))
-kpPoints(karyoplot = kp_cov , data=ZZPU_filt500_GR, chr =  seqnames(ZZPU_filt500_GR), x = start(ZZPU_filt500_GR), col = "black", y=ZZPU_filt500_GR$coverage)
+kpPoints(karyoplot = kp_cov , data=Woman3_filt500_GR, chr =  seqnames(Woman3_filt500_GR), x = start(Woman3_filt500_GR), col = "black", y=Woman3_filt500_GR$coverage)
 
 
-#PLots the 10log of the three Women. 
-kp_covUPIC <- plotKaryotype(plot.type = 4, main="plot of COV for Woman1", genome = "hg38", chromosomes =c("chrX"))
-#kpPlotCoverage(kp_covUPIC, data=UPIC_cov_loggr, show.0.cov = TRUE, data.panel=1, r0=0, r1=0.2, col="red", border = "blue")
-kpPoints(karyoplot = kp_covUPIC , data=UPIC_cov_loggr, chr =  seqnames(UPIC_cov_loggr), x = start(UPIC_cov_loggr), col = "black", y=UPIC_cov_loggr$coverage)
+#PLots the 10log of the three Women if needed due to high values from before. 
+kp_covWoman1 <- plotKaryotype(plot.type = 4, main="plot of COV for Woman1", genome = "hg38", chromosomes =c("chrX"))
+#kpPlotCoverage(kp_covUPIC, data=Woman1_cov_loggr, show.0.cov = TRUE, data.panel=1, r0=0, r1=0.2, col="red", border = "blue")
+kpPoints(karyoplot = kp_covWoman1 , data=Woman1_cov_loggr, chr =  seqnames(Woman1_cov_loggr), x = start(Woman1_cov_loggr), col = "black", y=Woman1_cov_loggr$coverage)
 
-kp_covPLJ <- plotKaryotype(plot.type = 2, main="plot of COV for Woman2", genome = "hg38", chromosomes =c("chr17","chr16", "chrX"))
-kpPlotCoverage(kp_covPLJ, data=PLJ_cov_loggr, show.0.cov = TRUE, data.panel=1, r0=0, r1=0.2, col="red", border="blue")
+kp_covWoman2 <- plotKaryotype(plot.type = 2, main="plot of COV for Woman2", genome = "hg38", chromosomes =c("chr17","chr16", "chrX"))
+kpPlotCoverage(kp_covWoman2, data=Woman2_cov_loggr, show.0.cov = TRUE, data.panel=1, r0=0, r1=0.2, col="red", border="blue")
 
-kp_covZZPU <- plotKaryotype(plot.type = 2, main="plot of COV for Woman3", genome = "hg38", chromosomes =c("chr17","chr16", "chrX"))
-kpPlotCoverage(kp_covZZPU, data=ZZPU_cov_loggr, show.0.cov = TRUE, data.panel=1, r0=0, r1=0.2, col="red", border="blue")
+kp_covWoman3 <- plotKaryotype(plot.type = 2, main="plot of COV for Woman3", genome = "hg38", chromosomes =c("chr17","chr16", "chrX"))
+kpPlotCoverage(kp_covWoman3, data=Woman3_cov_loggr, show.0.cov = TRUE, data.panel=1, r0=0, r1=0.2, col="red", border="blue")
 
 
 
@@ -211,30 +224,30 @@ kpPlotCoverage(kp_covZZPU, data=ZZPU_cov_loggr, show.0.cov = TRUE, data.panel=1,
 
 
 #the COV files with 5k tiles to be read in.
-setwd("/media/god/jellyfish/Emil/R")
+setwd("/path/to/directory/R")
 #This reads in only the chrX from the file.
-#Woman 1 
-UPIC_cov5k <- subset(fread("GTEX-UPIC_cov_5K.bed"), `#chromosome` == "chrX")
-UPIC_COV5k_gr <- toGRanges(UPIC_cov5k)
+#Woman1 
+Woman1_cov5k <- subset(fread("Woman1_cov_5K.bed"), `#chromosome` == "chrX")
+Woman1_COV5k_gr <- toGRanges(Woman1_cov5k)
 #filtering out the centromere data.
-UPIC_filt <- UPIC_cov5k
-UPIC_filt <- subset(UPIC_cov5k, start < 55000001 | start > 64995001)
-UPIC_filt_GR <- toGRanges(UPIC_filt)
+Woman1_filt <- Woman1_cov5k
+Woman1_filt <- subset(Woman1_cov5k, start < 55000001 | start > 64995001)
+Woman1_filt_GR <- toGRanges(Woman1_filt)
 
-#Woman 2
-PLJ_COV5k <-subset(fread("GTEX-13PLJ_cov_5K.bed"),  `#chromosome` == "chrX")
-PLJ_COV5k_GR <- toGRanges(PLJ_COV5k)
+#Woman2
+Woman2_COV5k <-subset(fread("Woman2_cov_5K.bed"),  `#chromosome` == "chrX")
+Woman2_COV5k_GR <- toGRanges(Woman2_COV5k)
 #filtering out the centromere data.
-PLJ_filter <- PLJ_COV5k
-PLJ_filter <-  subset(PLJ_COV5k, start < 55000001 | start > 64995001)
-PLJ_filter_GR <- toGRanges(PLJ_filter)
-#Woman 3
-ZZPU_COV5k <- subset(fread("GTEX-ZZPU_cov_5K.bed"), `#chromosome` == "chrX")
-ZZPU_COV5k_GR <- toGRanges(ZZPU_COV5k)
+Woman2_filter <- Woman2_COV5k
+Woman2_filter <-  subset(Woman2_COV5k, start < 55000001 | start > 64995001)
+Woman2_filter_GR <- toGRanges(Woman2_filter)
+#Woman3
+Woman3_COV5k <- subset(fread("Woman3_cov_5K.bed"), `#chromosome` == "chrX")
+Woman3_COV5k_GR <- toGRanges(Woman3_COV5k)
 #filtering out the centromere data.
-ZZPU_filter <- ZZPU_COV5k
-ZZPU_filt <- subset(ZZPU_COV5k, start < 55000001 | start > 64995001)
-ZZPU_filter_GR <- toGRanges(ZZPU_filt)
+Woman3_filter <- Woman3_COV5k
+Woman3_filt <- subset(Woman3_COV5k, start < 55000001 | start > 64995001)
+Woman3_filter_GR <- toGRanges(Woman3_filt)
 
 
 
@@ -246,37 +259,37 @@ ZZPU_filter_GR <- toGRanges(ZZPU_filt)
 
 #kpRect plots for the 5k tiles so it can be obeserved in the region and on other chromosomes if needed.
 kp_cov <- plotKaryotype(plot.type = 4, main="plot of COV for Woman1_5k", genome = "hg38", chromosomes =c("chrX"), zoom=zoom.region)
-kpRect(kp_cov, data=UPIC_filt_GR, chr =  seqnames(UPIC_filt_GR), y0=UPIC_filt_GR$coverage, y1=UPIC_filt_GR$coverage)
+kpRect(kp_cov, data=Woman1_filt_GR, chr =  seqnames(Woman1_filt_GR), y0=Woman1_filt_GR$coverage, y1=Woman1_filt_GR$coverage)
 
 kp_cov <- plotKaryotype(plot.type = 4, main="plot of COV for Woman2_5k", genome = "hg38", chromosomes =c("chrX"), zoom = zoom.region)
-kpRect(kp_cov, data=PLJ_filter_GR, chr =  seqnames(PLJ_filter_GR), y0=PLJ_filter_GR$coverage, y1=PLJ_filter_GR$coverage)
+kpRect(kp_cov, data=Woman2_filter_GR, chr =  seqnames(Woman2_filter_GR), y0=Woman2_filter_GR$coverage, y1=Woman2_filter_GR$coverage)
 
 kp_cov <- plotKaryotype(plot.type = 4, main="plot of COV for Woman3_5k", genome = "hg38", chromosomes =c("chrX"), zoom = zoom.region)
-kpRect(kp_cov, data=ZZPU_filter_GR, chr =  seqnames(ZZPU_filter_GR), y0=ZZPU_filter_GR$coverage, y1=ZZPU_filter_GR$coverage)
+kpRect(kp_cov, data=Woman3_filter_GR, chr =  seqnames(Woman3_filter_GR), y0=Woman3_filter_GR$coverage, y1=Woman3_filter_GR$coverage)
 
 # KP points plots
 kp_cov <- plotKaryotype(plot.type = 4, main="plot of COV for Woman3_5k", genome = "hg38", chromosomes =c("chrX"))
-kpPoints(karyoplot = kp_cov , data=ZZPU_filter_GR, chr =  seqnames(ZZPU_filter_GR), x = start(ZZPU_filter_GR), col = "black", y=ZZPU_filter_GR$coverage)
+kpPoints(karyoplot = kp_cov , data=Woman3_filter_GR, chr =  seqnames(Woman3_filter_GR), x = start(Woman3_filter_GR), col = "black", y=Woman3_filter_GR$coverage)
 
 kp_cov <- plotKaryotype(plot.type = 4, main="plot of COV for Woman2_5k", genome = "hg38", chromosomes =c("chrX"))
-kpPoints(karyoplot = kp_cov , data=PLJ_filter_GR, chr =  seqnames(PLJ_filter_GR), x = start(PLJ_filter_GR), col = "black", y=PLJ_filter_GR$coverage)
+kpPoints(karyoplot = kp_cov , data=Woman2_filter_GR, chr =  seqnames(Woman2_filter_GR), x = start(Woman2_filter_GR), col = "black", y=Woman2_filter_GR$coverage)
 
 kp_cov <- plotKaryotype(plot.type = 4, main="plot of COV for Woman1_5k", genome = "hg38", chromosomes=c("chrX"))
-kpPoints(karyoplot = kp_cov, data =UPIC_filt_GR, chr = seqnames(UPIC_filt_GR), x = start(UPIC_filt_GR), col="black", y=UPIC_filt_GR$coverage )
+kpPoints(karyoplot = kp_cov, data =Woman1_filt_GR, chr = seqnames(Woman1_filt_GR), x = start(Woman1_filt_GR), col="black", y=Woman1_filt_GR$coverage )
 
 #changing the filter for the coverage to a slightly higher value. 
-UPIC_NOZero <- filter(UPIC_cov5k, coverage > 0.3)
-UPIC_NOZero_log <- UPIC_NOZero
-UPIC_NOZero_log$coverage <- log10(UPIC_NOZero$coverage)
-UPIC_NOzero_gr <- toGRanges(UPIC_NOZero)
+Woman1_NOZero <- filter(Woman1_cov5k, coverage > 0.3)
+Woman1_NOZero_log <- Woman1_NOZero
+Woman1_NOZero_log$coverage <- log10(Woman1_NOZero$coverage)
+Woman1_NOzero_gr <- toGRanges(Woman1_NOZero)
 
 kp_cov <- plotKaryotype(plot.type = 7, main="     Woman1_5k", genome = "hg38", chromosomes =c("chrX"))
-kpPoints(karyoplot = kp_cov , data=UPIC_NOzero_gr, chr =  seqnames(UPIC_NOzero_gr), x = start(UPIC_NOzero_gr), col = "blue", y=UPIC_NOzero_gr$coverage)
+kpPoints(karyoplot = kp_cov , data=Woman1_NOzero_gr, chr =  seqnames(Woman1_NOzero_gr), x = start(Woman1_NOzero_gr), col = "blue", y=Woman1_NOzero_gr$coverage)
 
 
-Woman1_ploidies <- read.table("/media/god/jellyfish/Emil/R/GTEX-UPIC..ploidies.tab", header = T)
-Woman2_ploidies <- read.table("/media/god/jellyfish/Emil/R/GTEX-13PLJ..ploidies.tab", header = T)
-Woman3_ploidies <- read.table("/media/god/jellyfish/Emil/R/GTEX-ZZPU..ploidies.tab", header = T)
+Woman1_ploidies <- read.table("/path/to/directory/R/Woman1..ploidies.tab", header = T)
+Woman2_ploidies <- read.table("/path/to/directory/R/Woman2..ploidies.tab", header = T)
+Woman3_ploidies <- read.table("/path/to/directory/R/Woman3..ploidies.tab", header = T)
 
 Woman1_ploidies <- Woman1_ploidies[1:23,]
 Woman2_ploidies <- Woman2_ploidies[1:23,]
@@ -294,18 +307,18 @@ Women <- rbind(Woman1_ploidies,Woman2_ploidies,Woman3_ploidies)
 
 standard_contigs <- c(paste0(rep("chr", 22), seq(1,22,1)), "chrX")
 
-C1 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-11P81..ploidies.tab", header = T)
-C2 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-131XW..ploidies.tab", header = T)
-C3 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-145MI..ploidies.tab", header = T)
-C4 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-14LZ3..ploidies.tab", header = T)
-C5 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-1A32A..ploidies.tab", header = T)
-C6 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-1CAMS..ploidies.tab", header = T)
-C7 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-1GF9X..ploidies.tab", header = T)
-C8 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-1JMOU..ploidies.tab", header = T)
-C9 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-T2IS..ploidies.tab", header = T)
-C10 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-Y5LM..ploidies.tab", header = T)
-C11 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-YJ8O..ploidies.tab", header = T)
-C12 <- read.table("/media/god/jellyfish/Emil/R/tab/GTEX-ZV6S..ploidies.tab", header = T)
+C1 <- read.table("/path/to/directory/R/C1..ploidies.tab", header = T)
+C2 <- read.table("/path/to/directory/R/C2..ploidies.tab", header = T)
+C3 <- read.table("/path/to/directory/R/C3..ploidies.tab", header = T)
+C4 <- read.table("/path/to/directory/R/C4..ploidies.tab", header = T)
+C5 <- read.table("/path/to/directory/R/C5..ploidies.tab", header = T)
+C6 <- read.table("/path/to/directory/R/C6..ploidies.tab", header = T)
+C7 <- read.table("/path/to/directory/R/C7..ploidies.tab", header = T)
+C8 <- read.table("/path/to/directory/R/C8..ploidies.tab", header = T)
+C9 <- read.table("/path/to/directory/R/C9..ploidies.tab", header = T)
+C10 <- read.table("/path/to/directory/R/C10..ploidies.tab", header = T)
+C11 <- read.table("/path/to/directory/R/C11..ploidies.tab", header = T)
+C12 <- read.table("/path/to/directory/R/C12..ploidies.tab", header = T)
 
 C1 <-C1[1:23,]
 C2 <-C2[1:23,]
@@ -324,7 +337,7 @@ Control_Cov <- rbind(C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,C11,C12)
 Control_Cov$sample <- C
 
 Women <- rbind(Women,Control_Cov)
-source("/media/god/jellyfish/Emil/AL_ggplot_themes.R")
+source("//path/to/directory/R/AL_ggplot_themes.R")
 library(rstatix)
 
 women_stats <- Women[Women$Chromosome %in% standard_contigs,] %>% dplyr::group_by(Chromosome) %>% rstatix::get_summary_stats(Ploidy, type = "common")
