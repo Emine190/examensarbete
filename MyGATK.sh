@@ -9,7 +9,7 @@ gatk=/media/software/gatk-4.2.6.1/gatk
 Haplotype=/media/MY/files/haplotypecaller/$sample.Haplotype.g.vcf.gz
 #rm $Aligned
 #before this step check the head and tail of the files so they are OK other wise redo.
-baiNoX=/media/god'/My Book Duo1'/Emil/Control/NodupXchr/$sample.NodupXchr.bam.bai
+baiNoX=/media/MY/files/NodupXchr/$sample.NodupXchr.bam.bai
 samtools index -b -@32 /media/MY/files/NodupXchr/$sample.NodupXchr.bam \
 /media/MY/files/NodupXchr/$sample.NodupXchr.bam.bai
 #This bai files needs to be here or it will not run correctly in the haplotypecaller. 
