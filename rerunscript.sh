@@ -1,4 +1,4 @@
-cat /media/god/My Book Duo1/Emil/Control/sample | while read sample
+cat /media/MY/Files/Control/sample | while read sample
 do
 
 echo $sample
