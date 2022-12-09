@@ -1,4 +1,5 @@
 gatk=/media/software/gatk-4.2.6.1/gatk
+# Works by separting the samples from the combined file after applyVQRS so they can have a separate analysis for hetSNPs and Indels.
 
 #$gatk SelectVariants \
 #--variant ApplyVSQR.recalibrated.vcf \
