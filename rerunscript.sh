@@ -1,6 +1,6 @@
 cat /media/MY/Files/Control/sample | while read sample
 do
-
+# This script is used to prep the samples for Tiddit so it just outputs bamfiles with their respective INdex file.
 echo $sample
 control=/media/files/Control/batch2
 Input1=/media/MY/files/untrimmed/$sample'_'1.fastq.gz
