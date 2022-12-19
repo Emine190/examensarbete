@@ -6,17 +6,17 @@ install.packages("tidyverse")
 setwd("/path/to/dir/R/")
 #BiocManager::install(version = "3.16")
 BiocManager::install("AnnotationDbi")
-library(BiocManager)
-library(cowplot)
-library(ggplot2)
-library(data.table)
-library(tidyr)
-library(stringr)
-library(ggbeeswarm)
-library(ggpubr)
-library(karyoploteR)
-library(rtracklayer)
-library(dplyr)
+library(BiocManager) #Version = 1.30.10
+library(cowplot) #Version= 1.1.1
+library(ggplot2) # Version = 3.3.3
+library(data.table) # Version = 1.13.6
+library(tidyr)# Version = 1.1.2
+library(stringr)# Version =1.4.0
+library(ggbeeswarm) # Version = 0.6.0
+library(ggpubr) # Version = 0.4.0
+library(karyoploteR)# Version =1.16.0
+library(rtracklayer) # Version = 1.50.0
+library(dplyr) # Version = 1.0.4
 
 
 #imports the data of the three non-mosaic women
