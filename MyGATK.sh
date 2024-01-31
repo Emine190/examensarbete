@@ -73,6 +73,8 @@ output_vcf_SNP_recalfile_VariantRecalibrator=$vcf_temp/VarRecal.snps.recalfile.v
 output_tranches_SNP_VariantRecalibrator=$vcf_temp/VarRecal.snps.VariantRecalibrator.tranches
 output_rscript_SNP_VariantRecalibrator=$vcf_temp/VarRecal.snps.VariantRecalibrator.R
 
+
+# this can be used to already filter out non-single allelic expression. 
 $gatk VariantRecalibrator -R $ref_bwa_mem \
 -mode SNP \
 -AS \
@@ -86,6 +88,21 @@ $gatk VariantRecalibrator -R $ref_bwa_mem \
 -O $output_vcf_SNP_recalfile_VariantRecalibrator \
 --tranches-file $output_tranches_SNP_VariantRecalibrator \
 --rscript-file $output_rscript_SNP_VariantRecalibrator
+
+#use this version for single allelic
+gatk VariantRecalibrator \
+   -R Homo_sapiens_assembly38.fasta \
+   -V input.vcf.gz \
+   -AS \
+   --resource:hapmap,known=false,training=true,truth=true,prior=15.0 hapmap_3.3.hg38.sites.vcf.gz \
+   --resource:omni,known=false,training=true,truth=false,prior=12.0 1000G_omni2.5.hg38.sites.vcf.gz \
+   --resource:1000G,known=false,training=true,truth=false,prior=10.0 1000G_phase1.snps.high_confidence.hg38.vcf.gz \
+   --resource:dbsnp,known=true,training=false,truth=false,prior=2.0 Homo_sapiens_assembly38.dbsnp138.vcf.gz \
+   -an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR \
+   -mode SNP \
+   -O output.AS.recal \
+   --tranches-file output.AS.tranches \
+   --rscript-file output.plots.AS.R
 
 
 # INDEL modeling pass
